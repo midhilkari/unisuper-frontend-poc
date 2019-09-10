@@ -13,8 +13,8 @@ type QuestionProps = {
 
 type SignupData = {
 	username: string | null,
-	dateOfbirth: string | null,
-	accountNumber: string | null
+	dateOfBirth: string | null,
+	publicKey: string | null
 }
 
 const Container = styled.div`
@@ -129,7 +129,7 @@ const MetaMaskIntegrator: React.FC = ({}) => {
 	</InputGroup>)
 }
 
-const SignupQuestions: React.FC<{questionCounter: number}> = ({questionCounter}:{questionCounter: number}) => {
+const SignupQuestions: React.FC<{questionCounter: number, setUsername: Dispatch<SetStateAction<string>>}> = ({questionCounter, setUsername}:{questionCounter: number, setUsername: Dispatch<SetStateAction<string>>}) => {
 
 	switch(questionCounter) {
 		case(0):
@@ -139,23 +139,48 @@ const SignupQuestions: React.FC<{questionCounter: number}> = ({questionCounter}:
 					<DateOfBirthField/>
 				</StyledInputGroup>
 		case(1):
-			return <div>hello</div>
+			return <StyledInputGroup>
+					<div style={{textAlign: "center", fontWeight: "bold", padding: "2%"}}> Create New Account</div>
+					<DateOfBirthField/>
+				</StyledInputGroup>
 		default:
 			return <MetaMaskIntegrator/>
 	}
 }
 
-export default ({setLoggedIn}: SignupProps) => {
-	const [questionCounter, setQuestionCounter] = useState(0)
+const createAccountContract = ({signupData}:{signupData: SignupData}) => {
+	// handles ...  await web3Instance.Employee.createNewAccount()
+}
 
+export default ({setLoggedIn}: SignupProps) => {
+	const initialSignUpData: SignupData = {username:null, dateOfBirth:null, publicKey:''}
+
+	const [questionCounter, setQuestionCounter] = useState(0)
+	const [username, setUsername] = useState('')
+	const [dateOfBirth, setDOB] = useState('')
+	const [publicKey, setPublicKey] = useState('initialSignUpData')
+
+	const signupData: SignupData = {
+		username,
+		dateOfBirth,
+		publicKey
+	}
 	return (
 		<Container>
 			<ContainerInputGroup>
-				<SignupQuestions questionCounter={questionCounter}/>
+				<SignupQuestions questionCounter={questionCounter} setUsername={setUsername}/>
 			</ContainerInputGroup>
 			<ControlButtonGroup>
-				<StyledButton onClick={()=>{setQuestionCounter((questionCounter + 1) % 3)}}>Back</StyledButton>
-				<StyledButton onClick={()=>{setQuestionCounter((questionCounter + 1) % 3)}}>Next</StyledButton>
+				{
+					questionCounter < 3?
+
+					<div>
+						<StyledButton onClick={()=>{setQuestionCounter((questionCounter + 1) % 3)}}>Back</StyledButton>
+						<StyledButton onClick={()=>{setQuestionCounter((questionCounter - 1) % 3)}}>Next</StyledButton>
+					</div>
+					:
+					<StyledButton onClick={()=>{createAccountContract({signupData})}}>Submit</StyledButton>
+				}
 			</ControlButtonGroup>
 		</Container>
 	)

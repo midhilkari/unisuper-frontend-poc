@@ -1,7 +1,7 @@
 import React, { useState, Dispatch, SetStateAction } from 'react';
 import {Form, FormControl, InputGroup, Col, Row, Button} from 'react-bootstrap';
 import './Signup.test';
-import styled from 'styled-components/macro';
+import styled from 'styled-components';
 
 type SignupProps = {
 	setLoggedIn: Dispatch<SetStateAction<boolean>>;
@@ -78,7 +78,7 @@ const Login = styled(Button)`
 
 
 
-const DateOfBirthField: React.FC = ({}) => (
+const DateOfBirthField: React.FC<{setDOB: Dispatch<SetStateAction<string>>}> = ({setDOB}) => (
 	<InputGroup className="mb-3">
 		<InputGroup.Prepend>
 			<InputGroup.Text id="basic-addon2">DOB</InputGroup.Text>
@@ -87,10 +87,11 @@ const DateOfBirthField: React.FC = ({}) => (
 			placeholder="DD / MM / YYYY"
 			aria-label="DOB"
 			aria-describedby="basic-addon1"
+			onKeyUp = {(e: any) => {setDOB(e.target.value)}}
 		/>
 	</InputGroup>)
 
-const UserNameField: React.FC = ({}) => (
+const UserNameField: React.FC<{setUsername: Dispatch<SetStateAction<string>>}> = ({setUsername}: {setUsername: Dispatch<SetStateAction<string>>}) => (
 	<InputGroup className="mb-3">
 		<InputGroup.Prepend>
 			<InputGroup.Text id="basic-addon1">@</InputGroup.Text>
@@ -99,11 +100,12 @@ const UserNameField: React.FC = ({}) => (
 			placeholder="Username"
 			aria-label="Username"
 			aria-describedby="basic-addon1"
+			onKeyUp = {(e: any) =>  {setUsername(e.target.value)}}
 		/>
 	</InputGroup>)
 
 
-const MetaMaskIntegrator: React.FC = ({}) => {
+const MetaMaskExtractor: React.FC = ({}) => {
 
 	// Is MetaMask installed ?
 
@@ -118,37 +120,34 @@ const MetaMaskIntegrator: React.FC = ({}) => {
 
 	return (
 	<InputGroup className="mb-3">
-		<InputGroup.Prepend>
-			<InputGroup.Text id="basic-addon1">@</InputGroup.Text>
-		</InputGroup.Prepend>
-		<FormControl
-			placeholder="Username"
-			aria-label="Username"
-			aria-describedby="basic-addon1"
-		/>
+		<div>Add Metamask Extractor</div>
 	</InputGroup>)
 }
 
-const SignupQuestions: React.FC<{questionCounter: number, setUsername: Dispatch<SetStateAction<string>>}> = ({questionCounter, setUsername}:{questionCounter: number, setUsername: Dispatch<SetStateAction<string>>}) => {
+const SignupQuestions: React.FC<{questionCounter: number, setUsername: Dispatch<SetStateAction<string>>, setDOB:Dispatch<SetStateAction<string>>}> = ({questionCounter, setUsername, setDOB}:{questionCounter: number, setUsername: Dispatch<SetStateAction<string>>, setDOB: Dispatch<SetStateAction<string>>}) => {
 
 	switch(questionCounter) {
 		case(0):
 			return <StyledInputGroup>
 					<div style={{textAlign: "center", fontWeight: "bold", padding: "2%"}}> Create New Account</div>
-					<UserNameField/>
-					<DateOfBirthField/>
+					<UserNameField setUsername={setUsername}/>
+					<DateOfBirthField setDOB={setDOB}/>
 				</StyledInputGroup>
 		case(1):
 			return <StyledInputGroup>
 					<div style={{textAlign: "center", fontWeight: "bold", padding: "2%"}}> Create New Account</div>
-					<DateOfBirthField/>
+					<div>Add Metamask Integrater</div>
 				</StyledInputGroup>
 		default:
-			return <MetaMaskIntegrator/>
+			return <StyledInputGroup>
+			<div style={{textAlign: "center", fontWeight: "bold", padding: "2%"}}> Create New Account</div>
+			<MetaMaskExtractor/>
+		</StyledInputGroup>
 	}
 }
 
 const createAccountContract = ({signupData}:{signupData: SignupData}) => {
+	console.log(signupData);
 	// handles ...  await web3Instance.Employee.createNewAccount()
 }
 
@@ -165,18 +164,21 @@ export default ({setLoggedIn}: SignupProps) => {
 		dateOfBirth,
 		publicKey
 	}
+
+	console.warn({username, dateOfBirth, publicKey})
+	console.warn({questionCounter})
 	return (
 		<Container>
 			<ContainerInputGroup>
-				<SignupQuestions questionCounter={questionCounter} setUsername={setUsername}/>
+				<SignupQuestions questionCounter={questionCounter} setUsername={setUsername} setDOB={setDOB}/>
 			</ContainerInputGroup>
 			<ControlButtonGroup>
 				{
-					questionCounter < 3?
+					questionCounter < 2?
 
 					<div>
-						<StyledButton onClick={()=>{setQuestionCounter((questionCounter + 1) % 3)}}>Back</StyledButton>
-						<StyledButton onClick={()=>{setQuestionCounter((questionCounter - 1) % 3)}}>Next</StyledButton>
+						<StyledButton onClick={()=>{setQuestionCounter((questionCounter - 1) % 3)}}>Back</StyledButton>
+						<StyledButton onClick={()=>{setQuestionCounter((questionCounter + 1) % 3)}}>Next</StyledButton>
 					</div>
 					:
 					<StyledButton onClick={()=>{createAccountContract({signupData})}}>Submit</StyledButton>

@@ -5,6 +5,8 @@ import styled from 'styled-components';
 
 type SignupProps = {
 	setLoggedIn: Dispatch<SetStateAction<boolean>>;
+	web3Instance: any;
+	ethInstance: any;
 }
 
 type QuestionProps = {
@@ -104,27 +106,62 @@ const UserNameField: React.FC<{setUsername: Dispatch<SetStateAction<string>>}> =
 		/>
 	</InputGroup>)
 
+const allowLegacyMetaMask = (web3Instance: any, setEnableMetaMask:Dispatch<SetStateAction<boolean>>) =>{
+	web3Instance.currentProvider.enable().then(()=>{
+		setEnableMetaMask(true)
+	}).catch(() => setEnableMetaMask(false))
+}
 
-const MetaMaskExtractor: React.FC = ({}) => {
+const allowMetaMask = (ethInstance: any, setEnableMetaMask:Dispatch<SetStateAction<boolean>>) =>{
+	ethInstance.enable().then(()=>{
+		setEnableMetaMask(true)
+	}).catch(() => setEnableMetaMask(false))
+}
 
-	// Is MetaMask installed ?
+const MetaMaskResults: React.FC<{ethInstance: any, web3Instance: any, setPublicKey:Dispatch<SetStateAction<string>>}> = ({ethInstance, web3Instance, setPublicKey}) => {
+	return <div>
+		<label>
+			{ethInstance.selectedAddress}
+		</label>
+		<button onClick={() => setPublicKey(ethInstance.selectedAddress)}>Link Personal Account</button>
+	</div>
+}
 
-	// Is MetaMask allowed ?
-
-	// What is the address ?
-
-	// Can the user sign a message to prove ownership ?
-
-	//
-
+const MetaMaskIntegrator: React.FC<{ethInstance: any, web3Instance: any}> = ({ethInstance, web3Instance}) => {
+	let legacy = false;
+	const [isMetaMaskEnabled, setEnabledMetaMask] = useState(false);
+	if(web3Instance) {
+		legacy = true
+	}
 
 	return (
 	<InputGroup className="mb-3">
-		<div>Add Metamask Extractor</div>
+		{
+			<Button
+			onClick={() => legacy? allowLegacyMetaMask(web3Instance, setEnabledMetaMask)
+				: allowMetaMask(ethInstance, setEnabledMetaMask)}>
+				Enable MetaMask
+			</Button>
+		}
 	</InputGroup>)
 }
 
-const SignupQuestions: React.FC<{questionCounter: number, setUsername: Dispatch<SetStateAction<string>>, setDOB:Dispatch<SetStateAction<string>>}> = ({questionCounter, setUsername, setDOB}:{questionCounter: number, setUsername: Dispatch<SetStateAction<string>>, setDOB: Dispatch<SetStateAction<string>>}) => {
+const SignupQuestions: React.FC<{
+	questionCounter: number,
+	setUsername: Dispatch<SetStateAction<string>>,
+	setDOB:Dispatch<SetStateAction<string>>
+	setPublicKey:Dispatch<SetStateAction<string>>
+	ethInstance: any,
+	web3Instance: any}> =
+	({questionCounter, setUsername, setDOB, setPublicKey, ethInstance, web3Instance}:
+	{
+		questionCounter: number,
+		setUsername: Dispatch<SetStateAction<string>>,
+		setDOB: Dispatch<SetStateAction<string>>,
+		setPublicKey: Dispatch<SetStateAction<string>>,
+		ethInstance: any,
+		web3Instance: any
+	}) => {
 
 	switch(questionCounter) {
 		case(0):
@@ -136,12 +173,17 @@ const SignupQuestions: React.FC<{questionCounter: number, setUsername: Dispatch<
 		case(1):
 			return <StyledInputGroup>
 					<div style={{textAlign: "center", fontWeight: "bold", padding: "2%"}}> Create New Account</div>
-					<div>Add Metamask Integrater</div>
+					{
+						!ethInstance && !web3Instance?
+						<div>Please Install MetaMask</div>
+						:
+						<MetaMaskIntegrator ethInstance={ethInstance} web3Instance={web3Instance}/>
+					}
 				</StyledInputGroup>
 		default:
 			return <StyledInputGroup>
 			<div style={{textAlign: "center", fontWeight: "bold", padding: "2%"}}> Create New Account</div>
-			<MetaMaskExtractor/>
+			<MetaMaskResults ethInstance={ethInstance} web3Instance={web3Instance} setPublicKey={setPublicKey}/>
 		</StyledInputGroup>
 	}
 }
@@ -151,7 +193,7 @@ const createAccountContract = ({signupData}:{signupData: SignupData}) => {
 	// handles ...  await web3Instance.Employee.createNewAccount()
 }
 
-export default ({setLoggedIn}: SignupProps) => {
+export default ({setLoggedIn,  ethInstance, web3Instance}: SignupProps) => {
 	const initialSignUpData: SignupData = {username:null, dateOfBirth:null, publicKey:''}
 
 	const [questionCounter, setQuestionCounter] = useState(0)
@@ -165,12 +207,17 @@ export default ({setLoggedIn}: SignupProps) => {
 		publicKey
 	}
 
-	console.warn({username, dateOfBirth, publicKey})
-	console.warn({questionCounter})
 	return (
 		<Container>
 			<ContainerInputGroup>
-				<SignupQuestions questionCounter={questionCounter} setUsername={setUsername} setDOB={setDOB}/>
+				<SignupQuestions
+					questionCounter={questionCounter}
+					setUsername={setUsername}
+					setDOB={setDOB}
+					setPublicKey={setPublicKey}
+					ethInstance={ethInstance}
+					web3Instance={web3Instance}
+					/>
 			</ContainerInputGroup>
 			<ControlButtonGroup>
 				{

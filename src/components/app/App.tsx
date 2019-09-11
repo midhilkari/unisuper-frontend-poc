@@ -8,7 +8,8 @@ const contract = require('truffle-contract');
 
 declare global {
 	interface Window {
-	   web3: any;
+		web3: any;
+		ethereum: any;
 	}
 }
 
@@ -20,28 +21,27 @@ const mockData = {
 	privateKey: ""
 }
 
-const establishWeb3ProviderConnection = () => {
-	if(window.web3) {
-		return new Web3(window.web3.currentProvider);
-	} else {
-		return null
-	}
-}
 
 const App: React.FC = () => {
 	const [isLoggedIn, setLoggedIn] = useState(mockData.isLoggedIn)
 	const [selectedMenu, setSelectedMenu] = useState(mockData.selectedMenu);
-	const [web3Instance, setWeb3Instance] = useState(new Web3("http://localhost:7545"));
+	const [web3Instance, setWeb3Instance] = React.useState<any>(false);
+	const [ethInstance, setEthereumInstance] = React.useState<any>(false);
 
-	// useEffect(()=>{
-	// 	const _web3 = establishWeb3ProviderConnection();
-	// 	if(_web3 !== null) {
-	// 		setWeb3Instance(_web3);
-	// 		console.warn({_web3})
-	// 	}
-	// }, [])
+	useEffect(()=>{
+		if(window.ethereum) {
+			setEthereumInstance(window.ethereum);
+			setWeb3Instance(false);
+		} else if (window.web3) {
+			const web3 = new Web3(window.web3.currentProvider);
+			setWeb3Instance(web3);
+			setEthereumInstance(false);
+		} else {
+			setWeb3Instance(false)
+			setEthereumInstance(false)
+		}
+	}, [])
 
-	console.warn({web3Instance})
 	if(isLoggedIn) {
 		return (
 			<div className="App">
@@ -54,7 +54,7 @@ const App: React.FC = () => {
 		return (
 			<div>
 				<Header/>
-				<Signup setLoggedIn={setLoggedIn}/>
+				<Signup setLoggedIn={setLoggedIn} web3Instance={web3Instance} ethInstance={ethInstance}/>
 			</div>
 		)
 	}

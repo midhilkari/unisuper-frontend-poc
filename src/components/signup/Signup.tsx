@@ -2,6 +2,10 @@ import React, { useState, Dispatch, SetStateAction } from 'react';
 import {Form, FormControl, InputGroup, Col, Row, Button} from 'react-bootstrap';
 import './Signup.test';
 import styled from 'styled-components';
+import UniSuperLedger from '../../contracts/UniSuperLedger.json';
+import Web3 from 'web3';
+//import contract from "@truffle/contract";
+var contract = require("@truffle/contract");
 
 type SignupProps = {
 	setLoggedIn: Dispatch<SetStateAction<boolean>>;
@@ -188,9 +192,22 @@ const SignupQuestions: React.FC<{
 	}
 }
 
-const createAccountContract = ({signupData}:{signupData: SignupData}) => {
+const createAccountContract = async({signupData, ethInstance, web3Instance}:{signupData: SignupData, ethInstance: any, web3Instance: any }) => {
 	console.log(signupData);
+	// console.warn({contract, ethInstance, web3Instance, UniSuperLedger})
 	// handles ...  await web3Instance.Employee.createNewAccount()
+	var provider = new Web3.providers.HttpProvider("http://localhost:7545");
+
+	const uniSuperLedger = contract({
+		abi: UniSuperLedger.abi,
+		unlinked_binary: UniSuperLedger.bytecode,
+		address: '0x31284B060A9f1a108915f13066868A55c783F215'
+	})
+	uniSuperLedger.setProvider(provider);
+	let instance = await uniSuperLedger.at('0x31284B060A9f1a108915f13066868A55c783F215');
+	instance.createEmployeeId(signupData.dateOfBirth, signupData.publicKey, signupData.username, {from: signupData.publicKey});
+
+	console.warn({uniSuperLedger});
 }
 
 export default ({setLoggedIn,  ethInstance, web3Instance}: SignupProps) => {
@@ -228,7 +245,7 @@ export default ({setLoggedIn,  ethInstance, web3Instance}: SignupProps) => {
 						<StyledButton onClick={()=>{setQuestionCounter((questionCounter + 1) % 3)}}>Next</StyledButton>
 					</div>
 					:
-					<StyledButton onClick={()=>{createAccountContract({signupData})}}>Submit</StyledButton>
+					<StyledButton onClick={()=>{createAccountContract({signupData, ethInstance, web3Instance})}}>Submit</StyledButton>
 				}
 			</ControlButtonGroup>
 		</Container>

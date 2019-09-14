@@ -1,5 +1,5 @@
 import React, { useState, Dispatch, SetStateAction } from 'react';
-import {Form, FormControl, InputGroup, Col, Row, Button} from 'react-bootstrap';
+import { Form, FormControl, InputGroup, Col, Row, Button, Card, Container, Alert } from 'react-bootstrap';
 import './Signup.test';
 import styled from 'styled-components';
 import UniSuperLedger from '../../contracts/UniSuperLedger.json';
@@ -23,14 +23,14 @@ type SignupData = {
 	publicKey: string | null
 }
 
-const Container = styled.div`
-	display: flex;
-	flex-direction: column;
-	justify-content:center;
-	align-items: center;
-	margin: none;
-	height: 90vh;
-`;
+// const Container = styled.div`
+// 	display: flex;
+// 	flex-direction: column;
+// 	justify-content:center;
+// 	align-items: center;
+// 	margin: none;
+// 	height: 90vh;
+// `;
 
 const ContainerInputGroup = styled.div`
 	display: flex;
@@ -59,7 +59,14 @@ const StyledForm = styled(Form)`
 `
 
 const StyledButton = styled(Button)`
-	width: 15vw;
+	width: 100%;
+	background-color: steelblue;
+	:hover{
+		background-color: royalblue;
+	}
+	border: none;
+	padding: 10px;
+	border-radius: 10px;
 `;
 
 const Login = styled(Button)`
@@ -70,7 +77,7 @@ const Login = styled(Button)`
 	text-decoration: underline;
 	width: 100%;
 
-	::focus {
+	:focus {
 		transition: none;
 		color: blue;
 	}
@@ -82,117 +89,191 @@ const Login = styled(Button)`
 	}
 `;
 
+const AdreessLabel = styled.label`
+	background: transparent;
+	border-radius: 3px;
+	border: 2px solid palevioletred;
+	color: palevioletred;
+	/* margin: 0 1em; */
+	padding: 0.25em 1em;
+	font-family: Arial, Helvetica, sans-serif;
+`;
 
+const CenterAlign = styled.div`
+	text-align: center;
+	align-items: center;
+`;
 
-const DateOfBirthField: React.FC<{setDOB: Dispatch<SetStateAction<string>>}> = ({setDOB}) => (
-	<InputGroup className="mb-3">
-		<InputGroup.Prepend>
-			<InputGroup.Text id="basic-addon2">DOB</InputGroup.Text>
-		</InputGroup.Prepend>
-		<FormControl
-			placeholder="DD / MM / YYYY"
-			aria-label="DOB"
-			aria-describedby="basic-addon1"
-			onKeyUp = {(e: any) => {setDOB(e.target.value)}}
-		/>
-	</InputGroup>)
+const Heading = styled.div`
+	color: #696969;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 2em;
+	padding: 2%;
+	font-weight: lighter;
+`;
 
-const UserNameField: React.FC<{setUsername: Dispatch<SetStateAction<string>>}> = ({setUsername}: {setUsername: Dispatch<SetStateAction<string>>}) => (
-	<InputGroup className="mb-3">
-		<InputGroup.Prepend>
-			<InputGroup.Text id="basic-addon1">@</InputGroup.Text>
-		</InputGroup.Prepend>
-		<FormControl
-			placeholder="Username"
-			aria-label="Username"
-			aria-describedby="basic-addon1"
-			onKeyUp = {(e: any) =>  {setUsername(e.target.value)}}
-		/>
-	</InputGroup>)
+const H6 = styled.h6`
+	color: #696969;
+	font-family: Arial, Helvetica, sans-serif;
+`;
 
-const allowLegacyMetaMask = (web3Instance: any, setEnableMetaMask:Dispatch<SetStateAction<boolean>>) =>{
-	web3Instance.currentProvider.enable().then(()=>{
-		setEnableMetaMask(true)
-	}).catch(() => setEnableMetaMask(false))
-}
-
-const allowMetaMask = (ethInstance: any, setEnableMetaMask:Dispatch<SetStateAction<boolean>>) =>{
-	ethInstance.enable().then(()=>{
-		setEnableMetaMask(true)
-	}).catch(() => setEnableMetaMask(false))
-}
-
-const MetaMaskResults: React.FC<{ethInstance: any, web3Instance: any, setPublicKey:Dispatch<SetStateAction<string>>}> = ({ethInstance, web3Instance, setPublicKey}) => {
-	return <div>
-		<label>
-			{ethInstance.selectedAddress}
-		</label>
-		<button onClick={() => setPublicKey(ethInstance.selectedAddress)}>Link Personal Account</button>
+const DateOfBirthField: React.FC<{ setDOB: Dispatch<SetStateAction<string>> }> = ({ setDOB }) => (
+	<div style={{ padding: "20px 30px 30px 30px" }}>
+		<InputGroup size="lg" className="mb-3">
+			<InputGroup.Prepend>
+				<InputGroup.Text id="basic-addon2">DOB</InputGroup.Text>
+			</InputGroup.Prepend>
+			<FormControl
+				placeholder="DD / MM / YYYY"
+				aria-label="DOB"
+				aria-describedby="basic-addon1"
+				onKeyUp={(e: any) => { setDOB(e.target.value) }}
+			/>
+		</InputGroup>
 	</div>
+)
+
+const UserNameField: React.FC<{ setUsername: Dispatch<SetStateAction<string>> }> = ({ setUsername }: { setUsername: Dispatch<SetStateAction<string>> }) => (
+	<div style={{ padding: "30px 30px 0px 30px" }}>
+		<InputGroup size="lg" className="mb-3">
+			<InputGroup.Prepend>
+				<InputGroup.Text id="basic-addon1">@</InputGroup.Text>
+			</InputGroup.Prepend>
+			<FormControl
+				placeholder="Username"
+				aria-label="Username"
+				aria-describedby="basic-addon1"
+				onKeyUp={(e: any) => { setUsername(e.target.value) }}
+			/>
+		</InputGroup>
+	</div>
+)
+
+const allowLegacyMetaMask = (web3Instance: any, setEnableMetaMask: Dispatch<SetStateAction<boolean>>) => {
+	web3Instance.currentProvider.enable().then(() => {
+		setEnableMetaMask(true)
+	}).catch(() => setEnableMetaMask(false))
 }
 
-const MetaMaskIntegrator: React.FC<{ethInstance: any, web3Instance: any}> = ({ethInstance, web3Instance}) => {
+const allowMetaMask = (ethInstance: any, setEnableMetaMask: Dispatch<SetStateAction<boolean>>) => {
+	ethInstance.enable().then(() => {
+		setEnableMetaMask(true)
+	}).catch(() => setEnableMetaMask(false))
+}
+
+const MetaMaskResults: React.FC<{ ethInstance: any, web3Instance: any, setPublicKey: Dispatch<SetStateAction<string>> }> = ({ ethInstance, web3Instance, setPublicKey }) => {
+	return (
+		<CenterAlign>
+			<div style={{ padding: "20px" }}>
+				<Row>
+					<Col>
+						<H6>Public Key</H6>
+						<AdreessLabel>
+							{ethInstance.selectedAddress}
+						</AdreessLabel>
+					</Col>
+				</Row>
+				<Row>
+					<Col>
+						<Button variant="info" onClick={() => setPublicKey(ethInstance.selectedAddress)}>Link Personal Account</Button>
+					</Col>
+				</Row>
+			</div>
+		</CenterAlign>
+	)
+}
+
+const MetaMaskIntegrator: React.FC<{ ethInstance: any, web3Instance: any }> = ({ ethInstance, web3Instance }) => {
 	let legacy = false;
 	const [isMetaMaskEnabled, setEnabledMetaMask] = useState(false);
-	if(web3Instance) {
+	if (web3Instance) {
 		legacy = true
 	}
 
 	return (
-	<InputGroup className="mb-3">
-		{
-			<Button
-			onClick={() => legacy? allowLegacyMetaMask(web3Instance, setEnabledMetaMask)
-				: allowMetaMask(ethInstance, setEnabledMetaMask)}>
-				Enable MetaMask
-			</Button>
-		}
-	</InputGroup>)
+		<div style={{ padding: "20px" }}>
+			{
+				<Button
+					variant="info"
+					onClick={() => legacy ? allowLegacyMetaMask(web3Instance, setEnabledMetaMask)
+						: allowMetaMask(ethInstance, setEnabledMetaMask)}>
+					Enable MetaMask
+				</Button>
+			}
+		</div>
+	)
 }
 
 const SignupQuestions: React.FC<{
 	questionCounter: number,
 	setUsername: Dispatch<SetStateAction<string>>,
-	setDOB:Dispatch<SetStateAction<string>>
-	setPublicKey:Dispatch<SetStateAction<string>>
+	setDOB: Dispatch<SetStateAction<string>>
+	setPublicKey: Dispatch<SetStateAction<string>>
 	ethInstance: any,
-	web3Instance: any}> =
-	({questionCounter, setUsername, setDOB, setPublicKey, ethInstance, web3Instance}:
-	{
-		questionCounter: number,
-		setUsername: Dispatch<SetStateAction<string>>,
-		setDOB: Dispatch<SetStateAction<string>>,
-		setPublicKey: Dispatch<SetStateAction<string>>,
-		ethInstance: any,
-		web3Instance: any
-	}) => {
+	web3Instance: any
+}> =
+	({ questionCounter, setUsername, setDOB, setPublicKey, ethInstance, web3Instance }:
+		{
+			questionCounter: number,
+			setUsername: Dispatch<SetStateAction<string>>,
+			setDOB: Dispatch<SetStateAction<string>>,
+			setPublicKey: Dispatch<SetStateAction<string>>,
+			ethInstance: any,
+			web3Instance: any
+		}) => {
 
-	switch(questionCounter) {
-		case(0):
-			return <StyledInputGroup>
-					<div style={{textAlign: "center", fontWeight: "bold", padding: "2%"}}> Create New Account</div>
-					<UserNameField setUsername={setUsername}/>
-					<DateOfBirthField setDOB={setDOB}/>
-				</StyledInputGroup>
-		case(1):
-			return <StyledInputGroup>
-					<div style={{textAlign: "center", fontWeight: "bold", padding: "2%"}}> Create New Account</div>
-					{
-						!ethInstance && !web3Instance?
-						<div>Please Install MetaMask</div>
-						:
-						<MetaMaskIntegrator ethInstance={ethInstance} web3Instance={web3Instance}/>
-					}
-				</StyledInputGroup>
-		default:
-			return <StyledInputGroup>
-			<div style={{textAlign: "center", fontWeight: "bold", padding: "2%"}}> Create New Account</div>
-			<MetaMaskResults ethInstance={ethInstance} web3Instance={web3Instance} setPublicKey={setPublicKey}/>
-		</StyledInputGroup>
+		switch (questionCounter) {
+			case (0):
+				return <div>
+					<Card.Header>
+						<CenterAlign>
+							<Heading> Create New Account</Heading>
+						</CenterAlign>
+					</Card.Header>
+					<Card.Body>
+						<UserNameField setUsername={setUsername} />
+						<DateOfBirthField setDOB={setDOB} />
+					</Card.Body>
+				</div>
+			case (1):
+				return <div>
+					<Card.Header>
+						<CenterAlign>
+							<Heading> Create New Account</Heading>
+						</CenterAlign>
+					</Card.Header>
+					<Card.Body>
+						<CenterAlign>
+							{
+								!ethInstance && !web3Instance ?
+									<Alert variant="warning">
+										<div style={{ padding: "20px" }}>
+											<H6>Oops! it seems like you haven't instal <strong><em>Meta Mask</em></strong> in your browser <Alert.Link href="https://chrome.google.com/webstore/detail/metamask/nkbihfbeogaeaoehlefnkodbefgpgknn?hl=en-GB" target="_blank"> Click Here!</Alert.Link> to install.</H6>
+										</div>
+									</Alert>
+									:
+									<MetaMaskIntegrator ethInstance={ethInstance} web3Instance={web3Instance} />
+							}
+						</CenterAlign>
+					</Card.Body>
+				</div>
+
+			default:
+				return <div>
+					<Card.Header>
+						<CenterAlign>
+							<Heading> Create New Account</Heading>
+						</CenterAlign>
+					</Card.Header>
+					<Card.Body>
+						<MetaMaskResults ethInstance={ethInstance} web3Instance={web3Instance} setPublicKey={setPublicKey} />
+					</Card.Body>
+				</div>
+
+		}
 	}
-}
 
-const createAccountContract = async({signupData, ethInstance, web3Instance}:{signupData: SignupData, ethInstance: any, web3Instance: any }) => {
+const createAccountContract = async ({ signupData, ethInstance, web3Instance }: { signupData: SignupData, ethInstance: any, web3Instance: any }) => {
 	console.log(signupData);
 	// console.warn({contract, ethInstance, web3Instance, UniSuperLedger})
 	// handles ...  await web3Instance.Employee.createNewAccount()
@@ -205,13 +286,13 @@ const createAccountContract = async({signupData, ethInstance, web3Instance}:{sig
 	})
 	uniSuperLedger.setProvider(provider);
 	let instance = await uniSuperLedger.at('0x31284B060A9f1a108915f13066868A55c783F215');
-	instance.createEmployeeId(signupData.dateOfBirth, signupData.publicKey, signupData.username, {from: signupData.publicKey});
+	instance.createEmployeeId(signupData.dateOfBirth, signupData.publicKey, signupData.username, { from: signupData.publicKey });
 
-	console.warn({uniSuperLedger});
+	console.warn({ uniSuperLedger });
 }
 
-export default ({setLoggedIn,  ethInstance, web3Instance}: SignupProps) => {
-	const initialSignUpData: SignupData = {username:null, dateOfBirth:null, publicKey:''}
+export default ({ setLoggedIn, ethInstance, web3Instance }: SignupProps) => {
+	const initialSignUpData: SignupData = { username: null, dateOfBirth: null, publicKey: '' }
 
 	const [questionCounter, setQuestionCounter] = useState(0)
 	const [username, setUsername] = useState('')
@@ -225,29 +306,45 @@ export default ({setLoggedIn,  ethInstance, web3Instance}: SignupProps) => {
 	}
 
 	return (
-		<Container>
-			<ContainerInputGroup>
-				<SignupQuestions
-					questionCounter={questionCounter}
-					setUsername={setUsername}
-					setDOB={setDOB}
-					setPublicKey={setPublicKey}
-					ethInstance={ethInstance}
-					web3Instance={web3Instance}
-					/>
-			</ContainerInputGroup>
-			<ControlButtonGroup>
-				{
-					questionCounter < 2?
+		<Container style={{ padding: '50px' }}>
+			<Row>
+				<Col></Col>
+				<Col md={6}>
+					<div className="shadow mb-5 bg-white rounded">
+						<Card border="light" style={{ width: '100%' }}>
 
-					<div>
-						<StyledButton onClick={()=>{setQuestionCounter((questionCounter - 1) % 3)}}>Back</StyledButton>
-						<StyledButton onClick={()=>{setQuestionCounter((questionCounter + 1) % 3)}}>Next</StyledButton>
+							<SignupQuestions
+								questionCounter={questionCounter}
+								setUsername={setUsername}
+								setDOB={setDOB}
+								setPublicKey={setPublicKey}
+								ethInstance={ethInstance}
+								web3Instance={web3Instance}
+							/>
+
+							<Card.Footer>
+								<CenterAlign>
+									{
+										questionCounter < 2 ?
+
+											<Row>
+												<Col>
+													<StyledButton onClick={() => { setQuestionCounter((questionCounter - 1) % 3) }}>Back</StyledButton>
+												</Col>
+												<Col>
+													<StyledButton onClick={() => { setQuestionCounter((questionCounter + 1) % 3) }}>Next</StyledButton>
+												</Col>
+											</Row>
+											:
+											<StyledButton onClick={() => { createAccountContract({ signupData, ethInstance, web3Instance }) }}>Submit</StyledButton>
+									}
+								</CenterAlign>
+							</Card.Footer>
+						</Card>
 					</div>
-					:
-					<StyledButton onClick={()=>{createAccountContract({signupData, ethInstance, web3Instance})}}>Submit</StyledButton>
-				}
-			</ControlButtonGroup>
+				</Col>
+				<Col></Col>
+			</Row>
 		</Container>
 	)
 }

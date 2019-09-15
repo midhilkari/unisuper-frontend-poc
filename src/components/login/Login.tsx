@@ -1,20 +1,9 @@
 import React, { useState, Dispatch, SetStateAction } from 'react';
-import { Form, FormControl, InputGroup, Col, Row, Button, Card, Container, Alert } from 'react-bootstrap';
-
+import {FormControl, InputGroup, Col, Row, Button, Card, Container, Alert } from 'react-bootstrap';
 import styled from 'styled-components';
-import UniSuperLedger from '../../contracts/UniSuperLedger.json';
-import EmployeeContract from '../../contracts/Employee.json'
-
-import Web3 from 'web3';
-const utils = require("ethereumjs-util")
-const contract = require("@truffle/contract");
-
-type LoginProps = {
-    setLoggedIn: Dispatch<SetStateAction<boolean | string>>;
-    setNewUser: Dispatch<SetStateAction<boolean>>;
-	web3Instance: any;
-	ethInstance: any;
-}
+import {getMessageSignature} from '../../actions/contracts/generic';
+import {getEmployeeContractAddress, validateUserLogin} from '../../actions/contracts/unisuper';
+import {getEmployeeWalletAddress} from '../../actions/contracts/employee';
 
 const StyledButton = styled(Button)`
 	width: 100%;
@@ -53,6 +42,12 @@ const CenterAlign = styled.div`
 	align-items: center;
 `;
 
+type LoginProps = {
+    setLoggedIn: Dispatch<SetStateAction<boolean | string>>;
+    setNewUser: Dispatch<SetStateAction<boolean>>;
+	web3Instance: any;
+}
+
 const UserNameField: React.FC<{ setUsername: Dispatch<SetStateAction<string>> }> = ({ setUsername }: { setUsername: Dispatch<SetStateAction<string>> }) => (
 	<div style={{ padding: "30px 30px 0px 30px" }}>
 		<InputGroup size="lg" className="mb-3">
@@ -69,54 +64,19 @@ const UserNameField: React.FC<{ setUsername: Dispatch<SetStateAction<string>> }>
 	</div>
 )
 
-const processSignedMessage = (web3Instance: any, address: string, message: string): Promise<string> => new Promise(resolve => {
-    web3Instance.personal.sign("Login Attempt", address, (state:any,data:PromiseLike<any>)=>resolve(data));
-})
-
-const validateLogin = async ({ setLoggedIn, username, ethInstance, web3Instance }: { setLoggedIn: Dispatch<SetStateAction<boolean | string>>, username: string, ethInstance: any, web3Instance: any }) => {
+const validateLogin =  async ({ setLoggedIn, username, web3Instance }: { setLoggedIn: Dispatch<SetStateAction<boolean | string>>, username: string, web3Instance: any }) => {
 	console.warn(username);
-	const provider = new Web3.providers.HttpProvider("http://localhost:7545");
+	const employeeContractAddress = await getEmployeeContractAddress(username)
+	const employeeWalletAddress = await getEmployeeWalletAddress(employeeContractAddress);
 
-	const uniSuperLedger = contract({
-		abi: UniSuperLedger.abi,
-		unlinked_binary: UniSuperLedger.bytecode,
-    })
+	const msg = 'Login Attempt';
+	const signature = await getMessageSignature(web3Instance, employeeWalletAddress, msg);
+	const isValidLogin = await validateUserLogin(msg, signature, employeeWalletAddress);
 
-    const employeeContract = contract({
-        abi: EmployeeContract.abi,
-        unlinked_binary: EmployeeContract.bytecode
-    })
-
-	uniSuperLedger.setProvider(provider);
-    employeeContract.setProvider(provider);
-
-    let uniSuperInstance = await uniSuperLedger.at('0x9d107e28c0c1DB3399011C742699b66c712d2361');
-    const employeeContractAddress = await uniSuperInstance.getEmployeeContractAddress(username);
-
-    const employeeContractInstance = await employeeContract.at(employeeContractAddress);
-    const employeeWalletAddress = await employeeContractInstance.EmployeeAddress.call();
-
-    const msg = 'Login Attempt'
-    const signature = await processSignedMessage(web3Instance, employeeWalletAddress, msg)
-
-    const msgBuffer = utils.toBuffer(msg);
-    const msgHash = utils.hashPersonalMessage(msgBuffer);
-    const signatureBuffer = utils.toBuffer(signature);
-    const signatureParams = utils.fromRpcSig(signature);
-    const publicKey = utils.ecrecover(
-      msgHash,
-      signatureParams.v,
-      signatureParams.r,
-      signatureParams.s
-    );
-    const addressBuffer = utils.publicToAddress(publicKey);
-    const address = utils.bufferToHex(addressBuffer);
-
-
-    if(address == employeeWalletAddress.toLowerCase()) setLoggedIn(address)
+	if(isValidLogin) setLoggedIn(username);
 }
 
-export default ({ setLoggedIn, setNewUser, ethInstance, web3Instance }: LoginProps) => {
+export default ({ setLoggedIn, setNewUser, web3Instance }: LoginProps) => {
 	const [username, setUsername] = useState();
 
 	return (
@@ -131,7 +91,7 @@ export default ({ setLoggedIn, setNewUser, ethInstance, web3Instance }: LoginPro
 
 							<Card.Footer>
 								<CenterAlign>
-                                    <StyledButton onClick={() => { validateLogin({setLoggedIn, username, ethInstance, web3Instance }) }}>Login</StyledButton>
+                                    <StyledButton onClick={() => { validateLogin({setLoggedIn, username, web3Instance }) }}>Login</StyledButton>
                                     <NewUserButton onClick={() => { setNewUser(true) }}>Create New Account</NewUserButton>
 								</CenterAlign>
 							</Card.Footer>

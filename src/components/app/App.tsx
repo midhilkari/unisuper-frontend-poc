@@ -3,7 +3,7 @@ import Header from '../header/Header';
 import Signup from '../signup/Signup';
 import Menu from '../menu/Menu';
 import Details from '../details/Details';
-import Login from '../login/login'
+import Login from '../login/Login'
 import Web3 from 'web3';
 const contract = require('truffle-contract');
 
@@ -15,7 +15,7 @@ declare global {
 }
 
 const mockData = {
-	isLoggedIn: false,
+	loggedInUsername: false,
 	accountName: "Pesce",
 	selectedMenu: "Account",
 	accountAddress: "0x00000000000000000",
@@ -24,8 +24,8 @@ const mockData = {
 
 
 const App: React.FC = () => {
-	const [isLoggedIn, setLoggedIn] = React.useState<string | boolean>(mockData.isLoggedIn)
-	const [isNewUser, setNewUser] = useState(true);
+	const [loggedInUsername, setLoggedIn] = React.useState<string | boolean>(mockData.loggedInUsername)
+	const [isNewUser, setNewUser] = useState(false);
 	const [selectedMenu, setSelectedMenu] = useState(mockData.selectedMenu);
 	const [web3Instance, setWeb3Instance] = React.useState<any>(false);
 	const [ethInstance, setEthereumInstance] = React.useState<any>(false);
@@ -42,11 +42,11 @@ const App: React.FC = () => {
 		}
 	}, [])
 
-	if(isLoggedIn) {
+	if(loggedInUsername) {
 		return (
 			<div className="App">
 				<Header/>
-				<Menu accountName={mockData.accountName} selectedMenu={selectedMenu} setSelectedMenu={setSelectedMenu} setLoggedIn={setLoggedIn}/>
+				<Menu loggedInUsername={loggedInUsername} selectedMenu={selectedMenu} setSelectedMenu={setSelectedMenu} setLoggedIn={setLoggedIn}/>
 				<Details selectedMenu={selectedMenu} accountAddress={mockData.accountAddress}/>
 			</div>
 		);
@@ -58,7 +58,7 @@ const App: React.FC = () => {
 					isNewUser?
 					<Signup setNewUser={setNewUser} web3Instance={web3Instance} ethInstance={ethInstance}/>
 					:
-					<Login setLoggedIn={setLoggedIn} setNewUser={setNewUser} web3Instance={web3Instance} ethInstance={ethInstance}/>
+					<Login setLoggedIn={setLoggedIn} setNewUser={setNewUser} web3Instance={web3Instance}/>
 				}
 			</div>
 		);

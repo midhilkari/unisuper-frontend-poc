@@ -83,7 +83,7 @@ const TransferSelector = styled(Button)`
 `;
 
 type Menu = {
-	accountName: string,
+	loggedInUsername: string | boolean,
 	selectedMenu: string,
 	setSelectedMenu: Dispatch<SetStateAction<string>>,
 	setLoggedIn: Dispatch<SetStateAction<string | boolean>>
@@ -100,13 +100,13 @@ const handleClick = ({e, selection, state}: ClickEvent) => {
 
 }
 
-export default ({accountName, selectedMenu, setSelectedMenu, setLoggedIn}: Menu) => (
+export default ({loggedInUsername, selectedMenu, setSelectedMenu, setLoggedIn}: Menu) => (
 	<MenuContainer>
 		<InformationContainer>
 			<NameContainer>
 				<StyledAccountIcon></StyledAccountIcon>
 				<AccountName>
-					{accountName}
+					{loggedInUsername}
 				</AccountName>
 			</NameContainer>
 			<StyledButton onClick={() => { setLoggedIn(false) }}>Log Out</StyledButton>

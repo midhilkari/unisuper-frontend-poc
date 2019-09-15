@@ -8,7 +8,7 @@ import Web3 from 'web3';
 var contract = require("@truffle/contract");
 
 type SignupProps = {
-	setLoggedIn: Dispatch<SetStateAction<boolean>>;
+	setNewUser: Dispatch<SetStateAction<boolean>>;
 	web3Instance: any;
 	ethInstance: any;
 }
@@ -273,7 +273,7 @@ const SignupQuestions: React.FC<{
 		}
 	}
 
-const createAccountContract = async ({ signupData, ethInstance, web3Instance }: { signupData: SignupData, ethInstance: any, web3Instance: any }) => {
+const createAccountContract = async ({ signupData, ethInstance, web3Instance, setNewUser}: { signupData: SignupData, ethInstance: any, web3Instance: any, setNewUser: Dispatch<SetStateAction<boolean>> }) => {
 	console.log(signupData);
 	// console.warn({contract, ethInstance, web3Instance, UniSuperLedger})
 	// handles ...  await web3Instance.Employee.createNewAccount()
@@ -282,16 +282,16 @@ const createAccountContract = async ({ signupData, ethInstance, web3Instance }: 
 	const uniSuperLedger = contract({
 		abi: UniSuperLedger.abi,
 		unlinked_binary: UniSuperLedger.bytecode,
-		address: '0x31284B060A9f1a108915f13066868A55c783F215'
+		address: '0x9d107e28c0c1DB3399011C742699b66c712d2361'
 	})
 	uniSuperLedger.setProvider(provider);
-	let instance = await uniSuperLedger.at('0x31284B060A9f1a108915f13066868A55c783F215');
-	instance.createEmployeeId(signupData.dateOfBirth, signupData.publicKey, signupData.username, { from: signupData.publicKey });
+	let instance = await uniSuperLedger.at('0x9d107e28c0c1DB3399011C742699b66c712d2361');
+	await instance.createEmployeeId(signupData.dateOfBirth, signupData.publicKey, signupData.username, { from: signupData.publicKey });
 
-	console.warn({ uniSuperLedger });
+	setNewUser(false);
 }
 
-export default ({ setLoggedIn, ethInstance, web3Instance }: SignupProps) => {
+export default ({ setNewUser, ethInstance, web3Instance }: SignupProps) => {
 	const initialSignUpData: SignupData = { username: null, dateOfBirth: null, publicKey: '' }
 
 	const [questionCounter, setQuestionCounter] = useState(0)
@@ -336,7 +336,7 @@ export default ({ setLoggedIn, ethInstance, web3Instance }: SignupProps) => {
 												</Col>
 											</Row>
 											:
-											<StyledButton onClick={() => { createAccountContract({ signupData, ethInstance, web3Instance }) }}>Submit</StyledButton>
+											<StyledButton onClick={() => { createAccountContract({ signupData, ethInstance, web3Instance, setNewUser }) }}>Submit</StyledButton>
 									}
 								</CenterAlign>
 							</Card.Footer>

@@ -5,17 +5,37 @@ import {Button} from 'react-bootstrap';
 
 const MenuContainer = styled.div``;
 
+const InformationContainer = styled.div`
+	display: flex;
+	height: 20vh;
+	width: 40vw;
+	margin-left: 10%;
+	align-items: center;
+	justify-content: space-between;
+`;
+
 const NameContainer = styled.div`
 	display: flex;
-	height: 10vh;
-	width: 100vw;
 	align-items: center;
 `;
 
+
+const StyledButton = styled(Button)`
+	width: 15%;
+	background-color: steelblue;
+	:hover{
+		background-color: royalblue;
+	}
+	border: none;
+	padding: 10px;
+	border-radius: 10px;
+`;
+
+
 const StyledAccountIcon = styled(AccountIcon)`
-	margin-left: 10%;
 	height: 3rem;
 	width: 3rem;
+	margin-right: 5%;
 `;
 
 const AccountName = styled.div`
@@ -65,7 +85,8 @@ const TransferSelector = styled(Button)`
 type Menu = {
 	accountName: string,
 	selectedMenu: string,
-	setSelectedMenu: Dispatch<SetStateAction<string>>
+	setSelectedMenu: Dispatch<SetStateAction<string>>,
+	setLoggedIn: Dispatch<SetStateAction<string | boolean>>
 }
 
 type ClickEvent = {
@@ -79,14 +100,17 @@ const handleClick = ({e, selection, state}: ClickEvent) => {
 
 }
 
-export default ({accountName, selectedMenu, setSelectedMenu}: Menu) => (
+export default ({accountName, selectedMenu, setSelectedMenu, setLoggedIn}: Menu) => (
 	<MenuContainer>
-		<NameContainer>
-			<StyledAccountIcon></StyledAccountIcon>
-			<AccountName>
-				{accountName}
-			</AccountName>
-		</NameContainer>
+		<InformationContainer>
+			<NameContainer>
+				<StyledAccountIcon></StyledAccountIcon>
+				<AccountName>
+					{accountName}
+				</AccountName>
+			</NameContainer>
+			<StyledButton onClick={() => { setLoggedIn(false) }}>Log Out</StyledButton>
+		</InformationContainer>
 		<ButtonContainer>
 			<SummarySelector
 				active={selectedMenu === 'Account'? true: false}

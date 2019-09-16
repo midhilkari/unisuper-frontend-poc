@@ -13,27 +13,27 @@ const StyledRow = styled(Row)`
 	padding: 2%;
 `;
 
-const findFundName = (address:string, isMocked:boolean):string => {
+const findFundName = (address: string | boolean, isMocked:boolean):string => {
 	if(isMocked) return 'UNISUPER';
 	else return 'invalid';
 }
 
-const getTransferAmount =  (address:string, isMocked:boolean) => {
+const getTransferAmount =  (address: string | boolean, isMocked:boolean) => {
 	if(isMocked) return '$100,000.00';
 	else return 'invalid';
 }
 
-const getTransferAccount =  (address:string, isMocked:boolean) => {
+const getTransferAccount =  (address: string | boolean, isMocked:boolean) => {
 	if(isMocked) return '0x00001231420000123142';
 	else return 'invalid';
 }
 
 
-export default ({accountAddress, isMocked}: {accountAddress:string, isMocked: boolean}) => {
+export default ({username, isMocked}: {username:string | boolean, isMocked: boolean}) => {
 
-	const fundName = findFundName(accountAddress, isMocked);
-	const transferAmount = getTransferAmount(accountAddress, isMocked);
-	const transferAccount = getTransferAccount(accountAddress, isMocked);
+	const fundName = findFundName(username, isMocked);
+	const transferAmount = getTransferAmount(username, isMocked);
+	const transferAccount = getTransferAccount(username, isMocked);
 
 
 	return (<ContributionsContainer>

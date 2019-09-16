@@ -61,7 +61,7 @@ const SummarySelector = styled(Button)`
 		background-color: #2e73ab;
 	}
 `;
-const ContributionSelector = styled(Button)`
+const DepositSelector = styled(Button)`
 	width: 13%;
 	background-color: #cfcfcf;
 	color: #818181;
@@ -71,7 +71,7 @@ const ContributionSelector = styled(Button)`
 		background-color: #2e73ab;
 	}
 `;
-const TransferSelector = styled(Button)`
+const WithdrawalSelector = styled(Button)`
 	width: 13%;
 	background-color: #cfcfcf;
 	color: #818181;
@@ -115,12 +115,12 @@ export default ({loggedInUsername, selectedMenu, setSelectedMenu, setLoggedIn}: 
 			<SummarySelector
 				active={selectedMenu === 'Account'? true: false}
 				onClick={()=>setSelectedMenu('Account')}>Account Summary</SummarySelector>
-			<ContributionSelector
-				active={selectedMenu === 'Contributions'? true: false}
-				onClick={()=>setSelectedMenu('Contributions')}>Contributions</ContributionSelector>
-			<TransferSelector
-				active={selectedMenu === 'Transfers'? true: false}
-				onClick={()=>setSelectedMenu('Transfers')}>Transfer in</TransferSelector>
+			<DepositSelector
+				active={selectedMenu === 'Deposits'? true: false}
+				onClick={()=>setSelectedMenu('Deposits')}>Deposits</DepositSelector>
+			<WithdrawalSelector
+				active={selectedMenu === 'Withdrawals'? true: false}
+				onClick={()=>setSelectedMenu('Withdrawals')}>Withdrawals</WithdrawalSelector>
 		</ButtonContainer>
 	</MenuContainer>
 )

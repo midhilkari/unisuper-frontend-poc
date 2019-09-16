@@ -1,10 +1,11 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import Account from '../account/Account';
-import Contributions from '../contributions/Contributions';
-import Transfers from '../transfers/Transfers';
+import Deposits from '../deposits/Deposits';
+import Withdrawals from '../withdrawals/Withdrawals';
 import styled from 'styled-components';
 import 'react-bootstrap';
 
+import {getEmployeeContractAddress} from '../../actions/contracts/unisuper';
 
 const DetailContained = styled.div`
 
@@ -13,24 +14,31 @@ const DetailContained = styled.div`
 
 type Details = {
     selectedMenu: string,
-    accountAddress: string
+    username: any
 }
 
 type Selector = {
-    [key: string]: React.FC<{accountAddress: string, isMocked: boolean}>
+    [key: string]: React.FC<{username: string, isMocked: boolean, employeeContract: string}>
 }
-export default ({selectedMenu, accountAddress}:Details) => {
+export default ({selectedMenu, username}:Details) => {
+
+    const [employeeContract, setEmployeeContract] = useState();
+
+    useEffect(()=>{
+        getEmployeeContractAddress(username).then(setEmployeeContract)
+    }, []);
 
     const selector: Selector = {
         "Account": Account,
-        "Contributions": Contributions,
-        "Transfers": Transfers,
+        "Deposits": Deposits,
+        "Withdrawals": Withdrawals,
     }
 
-    const SelectedComponent: React.FC<{accountAddress: string, isMocked: boolean}> = selector[selectedMenu];
+    const SelectedComponent: React.FC<{username: string, isMocked: boolean, employeeContract: string}> = selector[selectedMenu];
 
-    console.log("Test")
+    console.log("Test");
+
     return (<DetailContained>
-        <SelectedComponent accountAddress={accountAddress} isMocked={true}/>
+        <SelectedComponent username={username} isMocked={true} employeeContract={employeeContract}/>
     </DetailContained>)
 }

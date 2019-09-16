@@ -13,38 +13,38 @@ const StyledRow = styled(Row)`
 	padding: 2%;
 `;
 
-const getAccounts = (address:string, isMocked:boolean):string => {
+const getAccounts = (address:string | boolean, isMocked:boolean):string => {
 	if(isMocked) return 'BDAY56580';
 	else return 'invalid';
 }
 
-const getInterest =  (address:string, isMocked:boolean) => {
+const getInterest =  (address:string | boolean, isMocked:boolean) => {
 	if(isMocked) return '$0.0';
 	else return 'invalid';
 }
 
-const getMemberContributions =  (address:string, isMocked:boolean) => {
+const getMemberContributions =  (address:string | boolean, isMocked:boolean) => {
 	if(isMocked) return '$0.0';
 	else return 'invalid';
 }
 
-const getEmployerContributions =  (address:string, isMocked:boolean) => {
+const getEmployerContributions =  (address:string | boolean, isMocked:boolean) => {
 	if(isMocked) return '$0.0';
 	else return 'invalid';
 }
 
-const getNetAccountBalance =  (address:string, isMocked:boolean) => {
+const getNetAccountBalance =  (address:string | boolean, isMocked:boolean) => {
 	if(isMocked) return '$0.0';
 	else return 'invalid';
 }
 
-export default ({accountAddress, isMocked}: {accountAddress:string, isMocked: boolean}) => {
+export default ({username, isMocked}: {username: string | boolean, isMocked: boolean}) => {
 
-	const accountNumber = getAccounts(accountAddress, isMocked);
-	const interestEarned = getInterest(accountAddress, isMocked);
-	const memberContributions = getMemberContributions(accountAddress, isMocked);
-	const employerContributions = getEmployerContributions(accountAddress, isMocked);
-	const accountBalance = getNetAccountBalance(accountAddress, isMocked);
+	const accountNumber = getAccounts(username, isMocked);
+	const interestEarned = getInterest(username, isMocked);
+	const memberContributions = getMemberContributions(username, isMocked);
+	const employerContributions = getEmployerContributions(username, isMocked);
+	const accountBalance = getNetAccountBalance(username, isMocked);
 
 
 	return (<AccountContainer>

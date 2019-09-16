@@ -1,6 +1,6 @@
 import Web3 from 'web3';
 import UniSuperLedger from '../../contracts/UniSuperLedger.json';
-import EmployeeContract from '../../contracts/Employee.json'
+import EmployeeContract from '../../contracts/Employee.json';
 import { getEmployeeContractAddress } from './unisuper.js';
 
 const contract = require("@truffle/contract");

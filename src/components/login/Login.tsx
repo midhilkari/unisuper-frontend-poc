@@ -1,7 +1,7 @@
 import React, { useState, Dispatch, SetStateAction } from 'react';
 import {FormControl, InputGroup, Col, Row, Button, Card, Container, Alert } from 'react-bootstrap';
 import styled from 'styled-components';
-import {getMessageSignature} from '../../actions/contracts/generic';
+import {getMessageSignature} from '../../actions/metamask/index';
 import {getEmployeeContractAddress, validateUserLogin} from '../../actions/contracts/unisuper';
 import {getEmployeeWalletAddress} from '../../actions/contracts/employee';
 

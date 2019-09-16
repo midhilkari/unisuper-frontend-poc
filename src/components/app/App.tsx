@@ -1,9 +1,8 @@
 import React, {useState, useEffect} from 'react';
 import Header from '../header/Header';
 import Signup from '../signup/Signup';
-import Menu from '../menu/Menu';
-import Details from '../details/Details';
-import Login from '../login/Login'
+import Login from '../login/Login';
+import AccountManagement from '../accountManagement/AccountManagement';
 import Web3 from 'web3';
 const contract = require('truffle-contract');
 
@@ -15,7 +14,7 @@ declare global {
 }
 
 const mockData = {
-	loggedInUsername: false,
+	loggedInUsername: "dim",
 	accountName: "Pesce",
 	selectedMenu: "Account",
 	accountAddress: "0x00000000000000000",
@@ -46,8 +45,12 @@ const App: React.FC = () => {
 		return (
 			<div className="App">
 				<Header/>
-				<Menu loggedInUsername={loggedInUsername} selectedMenu={selectedMenu} setSelectedMenu={setSelectedMenu} setLoggedIn={setLoggedIn}/>
-				<Details selectedMenu={selectedMenu} accountAddress={mockData.accountAddress}/>
+				<AccountManagement
+					selectedMenu={selectedMenu}
+					setSelectedMenu={setSelectedMenu}
+					loggedInUsername={loggedInUsername}
+					setLoggedIn={setLoggedIn}
+					ethInstance={ethInstance}/>
 			</div>
 		);
 	} else {

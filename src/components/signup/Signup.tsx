@@ -1,5 +1,6 @@
 import React, { useState, Dispatch, SetStateAction } from 'react';
 import { Form, FormControl, InputGroup, Col, Row, Button, Card, Container, Alert } from 'react-bootstrap';
+import {allowLegacyMetaMask, allowMetaMask} from '../../actions/metamask/index'
 import './Signup.test';
 import styled from 'styled-components';
 import UniSuperLedger from '../../contracts/UniSuperLedger.json';
@@ -148,18 +149,6 @@ const UserNameField: React.FC<{ setUsername: Dispatch<SetStateAction<string>> }>
 		</InputGroup>
 	</div>
 )
-
-const allowLegacyMetaMask = (web3Instance: any, setEnableMetaMask: Dispatch<SetStateAction<boolean>>) => {
-	web3Instance.currentProvider.enable().then(() => {
-		setEnableMetaMask(true)
-	}).catch(() => setEnableMetaMask(false))
-}
-
-const allowMetaMask = (ethInstance: any, setEnableMetaMask: Dispatch<SetStateAction<boolean>>) => {
-	ethInstance.enable().then(() => {
-		setEnableMetaMask(true)
-	}).catch(() => setEnableMetaMask(false))
-}
 
 const MetaMaskResults: React.FC<{ ethInstance: any, web3Instance: any, setPublicKey: Dispatch<SetStateAction<string>> }> = ({ ethInstance, web3Instance, setPublicKey }) => {
 	return (

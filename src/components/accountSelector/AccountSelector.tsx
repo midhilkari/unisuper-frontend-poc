@@ -16,12 +16,15 @@ const JumbotronStyled = styled(Jumbotron)`
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    padding-top: 0px;
 `;
 
 const CallToAction = styled.div`
-    font-weight: bold;
+    font-weight: lighter;
     font-size: 2rem;
     padding: 2%;
+    color: #696969;
+	font-family: Arial, Helvetica, sans-serif;
 `;
 
 const Grid = styled.div`
@@ -38,15 +41,18 @@ const AddAccountIcon = styled(AddIcon)`
 const StyledAccountIcon = styled(AccountIcon)`
     height: 4em;
     width: 4em;
+    color: gray;
 `;
 
 const GridElement = styled.div`
-    background-color: steelblue;
+    background-color: white;
+    border: steelblue;
     border-radius: 10px;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    padding: 2%;
 `;
 
 type AccountSelector = {

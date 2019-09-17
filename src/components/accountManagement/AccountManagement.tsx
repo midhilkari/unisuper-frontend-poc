@@ -41,6 +41,8 @@ export default ({loggedInUsername, selectedMenu, setSelectedMenu, setLoggedIn, e
                         setSelectedMenu={setSelectedMenu}
                         setLoggedIn={setLoggedIn}/>
                     <Details selectedMenu={selectedMenu}
+                        accountContractAddress={selectedAccount}
+                        ethInstance={ethInstance}
                         username={loggedInUsername}/>
                 </div>)
     } else {

@@ -19,16 +19,12 @@ export const getMessageSignature = (web3Instance: any, address: string, message:
     resolve(data)});
 })
 
-export const transferETHtoContract = (ethInstance: any, recipientAddress: string, wei: number): Promise<string> => new Promise(resolve => {
-
-	const _amount = window.web3.toBigNumber(wei);
-
-	console.warn({_amount})
+export const transferETHtoContract = (ethInstance: any, recipientAddress: string, wei: string): Promise<string> => new Promise(resolve => {
 	const transactionParams = {
 		from: ethInstance.selectedAddress,
 		to: recipientAddress,
 		data: '0x7f7465737432000000000000000000000000000000000000000000000000000000600057',
-		value: _amount.toString()
+		value: wei
 	}
 
 	console.warn({ethInstance})
@@ -36,5 +32,5 @@ export const transferETHtoContract = (ethInstance: any, recipientAddress: string
 		method: 'eth_sendTransaction',
 		params: [transactionParams],
 		from: ethInstance.selectedAddress
-	}, () => resolve())
+	}, resolve)
 })

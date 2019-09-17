@@ -14,8 +14,8 @@ declare global {
 }
 
 const mockData = {
-	loggedInUsername: "dim",
-	accountName: "Pesce",
+	loggedInUsername: false,
+	accountName: "",
 	selectedMenu: "Account",
 	accountAddress: "0x00000000000000000",
 	privateKey: ""

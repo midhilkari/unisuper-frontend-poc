@@ -1,15 +1,17 @@
 import React, { Dispatch, SetStateAction } from 'react';
 import styled from 'styled-components';
-import {ReactComponent as AccountIcon} from '../../assets/icons/account_circle.svg';
-import {Button} from 'react-bootstrap';
+import { ReactComponent as AccountIcon } from '../../assets/icons/account-icon.svg';
+import { Button, Container, Col, Row } from 'react-bootstrap';
 
-const MenuContainer = styled.div``;
+const MenuContainer = styled(Container)`
+	margin-top: 50px;
+`;
 
 const InformationContainer = styled.div`
 	display: flex;
 	height: 20vh;
 	width: 40vw;
-	margin-left: 10%;
+	/* margin-left: 10%; */
 	align-items: center;
 	justify-content: space-between;
 `;
@@ -21,7 +23,7 @@ const NameContainer = styled.div`
 
 
 const StyledButton = styled(Button)`
-	width: 15%;
+	/* width: 15%; */
 	background-color: steelblue;
 	:hover{
 		background-color: royalblue;
@@ -34,14 +36,14 @@ const StyledButton = styled(Button)`
 
 const StyledAccountIcon = styled(AccountIcon)`
 	height: 3rem;
-	width: 3rem;
+	width: 100%;
 	margin-right: 5%;
 `;
 
 const AccountName = styled.div`
-	margin-left: 1%;
-	font-size: 1.5em;
-	font-weight: bold;
+	font-size: 2em;
+	font-weight: lighter;
+	vertical-align: center;
 
 `;
 
@@ -52,19 +54,19 @@ const ButtonContainer = styled.div`
 `;
 
 const SummarySelector = styled(Button)`
-	width: 13%;
-	background-color: #cfcfcf;
-	color: #818181;
+	width: 15%;
+	background-color: steelblue;
+	color: #F8F8FF;
 	margin-right: 5px;
 	border: none;
 	::active {
-		background-color: #2e73ab;
+		background-color: steelblue;
 	}
 `;
 const DepositSelector = styled(Button)`
 	width: 13%;
-	background-color: #cfcfcf;
-	color: #818181;
+	background-color: steelblue;
+	color: #F8F8FF;
 	margin-right: 5px;
 	border: none;
 	::active {
@@ -73,13 +75,28 @@ const DepositSelector = styled(Button)`
 `;
 const WithdrawalSelector = styled(Button)`
 	width: 13%;
-	background-color: #cfcfcf;
-	color: #818181;
+	background-color: steelblue;
+	color: #F8F8FF;
 	margin-right: 5px;
 	border: none;
 	::active {
 		background-color: #2e73ab;
 	}
+`;
+
+const CenterAlign = styled.div`
+	text-align: center;
+	align-items: center;
+`;
+
+const RightAlign = styled.div`
+	text-align: right;
+	align-items: right;
+`;
+
+const StyledRow = styled(Row)`
+	margin-top: 5%;
+	margin-left: 0px;
 `;
 
 type Menu = {
@@ -95,32 +112,37 @@ type ClickEvent = {
 	state: Dispatch<SetStateAction<string>>;
 }
 
-const handleClick = ({e, selection, state}: ClickEvent) => {
+const handleClick = ({ e, selection, state }: ClickEvent) => {
 	e.preventDefault();
 
 }
 
-export default ({loggedInUsername, selectedMenu, setSelectedMenu, setLoggedIn}: Menu) => (
+export default ({ loggedInUsername, selectedMenu, setSelectedMenu, setLoggedIn }: Menu) => (
 	<MenuContainer>
-		<InformationContainer>
-			<NameContainer>
-				<StyledAccountIcon></StyledAccountIcon>
+		<Row>
+			<Col md={1}><StyledAccountIcon></StyledAccountIcon></Col>
+			<Col md={7}>
 				<AccountName>
-					{loggedInUsername}
+					Welcome {loggedInUsername}!
 				</AccountName>
-			</NameContainer>
-			<StyledButton onClick={() => { setLoggedIn(false) }}>Log Out</StyledButton>
-		</InformationContainer>
-		<ButtonContainer>
+			</Col>
+			<Col md={4}>
+				<RightAlign>
+					<StyledButton onClick={() => { setLoggedIn(false) }}>Log Out</StyledButton>
+				</RightAlign>
+			</Col>
+		</Row>
+		<hr></hr>
+		<StyledRow>
 			<SummarySelector
-				active={selectedMenu === 'Account'? true: false}
-				onClick={()=>setSelectedMenu('Account')}>Account Summary</SummarySelector>
+				active={selectedMenu === 'Account' ? true : false}
+				onClick={() => setSelectedMenu('Account')}>Account Summary</SummarySelector>
 			<DepositSelector
-				active={selectedMenu === 'Deposits'? true: false}
-				onClick={()=>setSelectedMenu('Deposits')}>Deposits</DepositSelector>
+				active={selectedMenu === 'Deposits' ? true : false}
+				onClick={() => setSelectedMenu('Deposits')}>Deposits</DepositSelector>
 			<WithdrawalSelector
-				active={selectedMenu === 'Withdrawals'? true: false}
-				onClick={()=>setSelectedMenu('Withdrawals')}>Withdrawals</WithdrawalSelector>
-		</ButtonContainer>
+				active={selectedMenu === 'Withdrawals' ? true : false}
+				onClick={() => setSelectedMenu('Withdrawals')}>Withdrawals</WithdrawalSelector>
+		</StyledRow>
 	</MenuContainer>
 )

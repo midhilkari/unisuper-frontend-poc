@@ -11,6 +11,7 @@
     "@types/styled-components": "^4.1.18",
     "@types/web3": "^1.0.19",
     "babel-plugin-macros": "^2.6.1",
+    "bn.js": "^5.0.0",
     "bootstrap": "^4.3.1",
     "eslint-utils": "^1.4.2",
     "ethereumjs-util": "^6.1.0",

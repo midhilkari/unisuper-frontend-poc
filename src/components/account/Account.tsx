@@ -1,68 +1,94 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import styled from 'styled-components';
 import {Row, Col} from 'react-bootstrap';
+
+import {getAccountStatus, getAccountType, getNetBalance, getPayoutFrequency, getRewardSize, getTimeTillReward} from '../../actions/contracts/account';
 
 const AccountContainer = styled.div`
 	margin-left: 10%;
 	margin-top: 1%;
 	font-weight: bold;
-	width: 75%;
+	width: 40%;
 `;
 
 const StyledRow = styled(Row)`
 	padding: 2%;
 `;
 
-const getAccounts = (address:string | boolean, isMocked:boolean):string => {
-	if(isMocked) return 'BDAY56580';
-	else return 'invalid';
-}
+const ColLabel = styled(Col)`
 
-const getInterest =  (address:string | boolean, isMocked:boolean) => {
-	if(isMocked) return '$0.0';
-	else return 'invalid';
-}
+`;
 
-const getMemberContributions =  (address:string | boolean, isMocked:boolean) => {
-	if(isMocked) return '$0.0';
-	else return 'invalid';
-}
+const ColVal = styled(Col)`
+	text-align: right;
+`;
 
-const getEmployerContributions =  (address:string | boolean, isMocked:boolean) => {
-	if(isMocked) return '$0.0';
-	else return 'invalid';
-}
+export default ({username, accountContractAddress, isMocked}: {username: string | boolean, accountContractAddress:string, isMocked: boolean}) => {
 
-const getNetAccountBalance =  (address:string | boolean, isMocked:boolean) => {
-	if(isMocked) return '$0.0';
-	else return 'invalid';
-}
+	const [netBalance, setNetBalance] = useState(0);
+	const [accountType, setAccountType] = useState('');
+	const [accountStatus, setAccountStatus] = useState('');
+	const [timeTillReward, setTimeTillReward] = useState(0);
+	const [rewardSize, setRewardSize] = useState(0);
+	const [payoutFrequency, setPayoutFrequency] = useState(0);
 
-export default ({username, isMocked}: {username: string | boolean, isMocked: boolean}) => {
-
-	const accountNumber = getAccounts(username, isMocked);
-	const interestEarned = getInterest(username, isMocked);
-	const memberContributions = getMemberContributions(username, isMocked);
-	const employerContributions = getEmployerContributions(username, isMocked);
-	const accountBalance = getNetAccountBalance(username, isMocked);
-
+	useEffect(() => {
+		getNetBalance(accountContractAddress).then(nb => setNetBalance(nb.toNumber()));
+		getAccountType(accountContractAddress).then(accTypeBN => {
+			switch(accTypeBN.toNumber()){
+				case(1):
+					setAccountType('Accumulation 2');
+				case(2):
+					setAccountType('Defined Benefit Division');
+				case(3):
+					setAccountType('Personal Account');
+				case(4):
+					setAccountType('Pension');
+				default:
+					setAccountType('Accumulation1');
+			}
+		});
+		getAccountStatus(accountContractAddress).then(accStatusBN => {
+			switch(accStatusBN.toNumber()){
+				case(1):
+					setAccountStatus('CLOSED');
+				default:
+					setAccountStatus('OPEN');
+			}
+		});
+		getTimeTillReward(accountContractAddress).then(ttrBN => setTimeTillReward(ttrBN.toNumber()));
+		getRewardSize(accountContractAddress).then(rsBN => setRewardSize(rsBN.toNumber()));
+		getPayoutFrequency(accountContractAddress).then(pfreqBN => setPayoutFrequency(pfreqBN.toNumber()));
+	}, []);
 
 	return (<AccountContainer>
 		<StyledRow>
-			<Col>Account Number</Col>
-			<Col>{accountNumber}</Col>
+			<ColLabel>Account Address</ColLabel>
+			<ColVal>{accountContractAddress}</ColVal>
 		</StyledRow>
 		<StyledRow>
-			<Col>Interest Earned On Contributions</Col>
-			<Col>{interestEarned}</Col>
+			<ColLabel>Account Type</ColLabel>
+			<ColVal>{accountType}</ColVal>
 		</StyledRow>
 		<StyledRow>
-			<Col>Member Contributions</Col>
-			<Col>{memberContributions}</Col>
+			<ColLabel>AccountStatus</ColLabel>
+			<ColVal>{accountStatus}</ColVal>
 		</StyledRow>
 		<StyledRow>
-			<Col>Employer Contributions</Col>
-			<Col>{employerContributions}</Col>
+			<ColLabel>Net Balance</ColLabel>
+			<ColVal>{netBalance}</ColVal>
+		</StyledRow>
+		<StyledRow>
+			<ColLabel>Time Till Reward</ColLabel>
+			<ColVal>{rewardSize}</ColVal>
+		</StyledRow>
+		<StyledRow>
+			<ColLabel>Reward Size</ColLabel>
+			<ColVal>{rewardSize}</ColVal>
+		</StyledRow>
+		<StyledRow>
+			<ColLabel>Payout Frequency</ColLabel>
+			<ColVal>{payoutFrequency}</ColVal>
 		</StyledRow>
 	</AccountContainer>)
 

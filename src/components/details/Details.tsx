@@ -14,13 +14,17 @@ const DetailContained = styled.div`
 
 type Details = {
     selectedMenu: string,
+    ethInstance: any,
+    accountContractAddress: string,
     username: any
 }
 
 type Selector = {
-    [key: string]: React.FC<{username: string, isMocked: boolean, employeeContract: string}>
+    [key: string]: React.FC<{username: string, ethInstance: any, isMocked: boolean, employeeContract: string}> |
+        React.FC<{username: string, accountContractAddress: string, ethInstance: any, isMocked: boolean, employeeContract: string}> |
+        React.FC<{username: string, accountContractAddress: string, isMocked: boolean, employeeContract: string}>
 }
-export default ({selectedMenu, username}:Details) => {
+export default ({selectedMenu, ethInstance, accountContractAddress, username}:Details) => {
 
     const [employeeContract, setEmployeeContract] = useState();
 
@@ -34,11 +38,16 @@ export default ({selectedMenu, username}:Details) => {
         "Withdrawals": Withdrawals,
     }
 
-    const SelectedComponent: React.FC<{username: string, isMocked: boolean, employeeContract: string}> = selector[selectedMenu];
+    const SelectedComponent: React.FC<{username: string, ethInstance: any, accountContractAddress: string, isMocked: boolean, employeeContract: string}> = selector[selectedMenu];
 
     console.log("Test");
 
     return (<DetailContained>
-        <SelectedComponent username={username} isMocked={true} employeeContract={employeeContract}/>
+        <SelectedComponent
+            ethInstance={ethInstance}
+            username={username}
+            accountContractAddress={accountContractAddress}
+            isMocked={true}
+            employeeContract={employeeContract}/>
     </DetailContained>)
 }

@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import styled from 'styled-components';
 import {Row, Col} from 'react-bootstrap';
-
+import BN from 'bn.js'
 import {getAccountStatus, getAccountType, getNetBalance, getPayoutFrequency, getRewardSize, getTimeTillReward} from '../../actions/contracts/account';
 
 const AccountContainer = styled.div`
@@ -25,7 +25,7 @@ const ColVal = styled(Col)`
 
 export default ({username, accountContractAddress, isMocked}: {username: string | boolean, accountContractAddress:string, isMocked: boolean}) => {
 
-	const [netBalance, setNetBalance] = useState(0);
+	const [netBalance, setNetBalance] = useState('0');
 	const [accountType, setAccountType] = useState('');
 	const [accountStatus, setAccountStatus] = useState('');
 	const [timeTillReward, setTimeTillReward] = useState(0);
@@ -33,7 +33,14 @@ export default ({username, accountContractAddress, isMocked}: {username: string 
 	const [payoutFrequency, setPayoutFrequency] = useState(0);
 
 	useEffect(() => {
-		getNetBalance(accountContractAddress).then(nb => setNetBalance(nb.toNumber()));
+		getNetBalance(accountContractAddress).then(netBal => {
+			const base = new BN(14)
+			const weiConverter = new BN(10).pow(base);
+			const preEthDecimal = new BN(netBal).div(weiConverter).toString(10);
+			const eth = [preEthDecimal.slice(0,1), ".", preEthDecimal.slice(1)].join("") + " ETH";
+			setNetBalance(eth)
+		});
+
 		getAccountType(accountContractAddress).then(accTypeBN => {
 			switch(accTypeBN.toNumber()){
 				case(1):

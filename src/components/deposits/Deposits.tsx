@@ -1,7 +1,7 @@
 import React, {useState, Dispatch, SetStateAction} from 'react';
 import styled from 'styled-components';
 import {Row, Col, Form, FormCheck, Button} from 'react-bootstrap';
-
+import BN from 'bn.js';
 import {transferETHtoContract} from '../../actions/metamask/index';
 
 const DepositsContainer = styled.div`
@@ -29,10 +29,11 @@ const processTransaction = async(e: any,
 	amount: string,
 	ethInstance: any,
 	setCompletedTransaction: Dispatch<SetStateAction<any>>) => {
-		console.warn({proEth: ethInstance})
-
-		const wei = parseInt(amount)
-		console.warn(amount)
+		const numberOfDecimals = amount.includes(".") ? amount.split(".")[1].length : 0;
+		if (numberOfDecimals > 0) amount = amount.replace(/\./, "");
+		const base = 18 - numberOfDecimals;
+		const ethConverter = new BN(10).pow(new BN(base));
+		const wei = new BN(amount).mul(ethConverter).toString(16)
 		await transferETHtoContract(ethInstance, recipientAddress, wei);
 }
 

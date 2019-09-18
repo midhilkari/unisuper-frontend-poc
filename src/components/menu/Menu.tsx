@@ -23,7 +23,7 @@ const NameContainer = styled.div`
 
 
 const StyledButton = styled(Button)`
-	/* width: 15%; */
+	width: 30%;
 	background-color: steelblue;
 	:hover{
 		background-color: royalblue;
@@ -31,6 +31,7 @@ const StyledButton = styled(Button)`
 	border: none;
 	padding: 10px;
 	border-radius: 10px;
+	margin-right: 5px;
 `;
 
 
@@ -103,7 +104,8 @@ type Menu = {
 	loggedInUsername: string | boolean,
 	selectedMenu: string,
 	setSelectedMenu: Dispatch<SetStateAction<string>>,
-	setLoggedIn: Dispatch<SetStateAction<string | boolean>>
+	setLoggedIn: Dispatch<SetStateAction<string | boolean>>,
+	setSelectedAccount: Dispatch<SetStateAction<string | null>>,
 }
 
 type ClickEvent = {
@@ -117,7 +119,7 @@ const handleClick = ({ e, selection, state }: ClickEvent) => {
 
 }
 
-export default ({ loggedInUsername, selectedMenu, setSelectedMenu, setLoggedIn }: Menu) => (
+export default ({ loggedInUsername, selectedMenu, setSelectedMenu, setLoggedIn, setSelectedAccount }: Menu) => (
 	<MenuContainer>
 		<Row>
 			<Col md={1}><StyledAccountIcon></StyledAccountIcon></Col>
@@ -129,6 +131,7 @@ export default ({ loggedInUsername, selectedMenu, setSelectedMenu, setLoggedIn }
 			<Col md={4}>
 				<RightAlign>
 					<StyledButton onClick={() => { setLoggedIn(false) }}>Log Out</StyledButton>
+					<StyledButton onClick={() => { setSelectedAccount(null) }}>Back</StyledButton>
 				</RightAlign>
 			</Col>
 		</Row>

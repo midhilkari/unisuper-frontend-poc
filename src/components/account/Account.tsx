@@ -1,14 +1,14 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import {Row, Col} from 'react-bootstrap';
+import { Row, Col, Container } from 'react-bootstrap';
 import BN from 'bn.js'
-import {getAccountStatus, getAccountType, getNetBalance, getPayoutFrequency, getRewardSize, getTimeTillReward} from '../../actions/contracts/account';
+import { getAccountStatus, getAccountType, getNetBalance, getPayoutFrequency, getRewardSize, getTimeTillReward } from '../../actions/contracts/account';
 
-const AccountContainer = styled.div`
-	margin-left: 10%;
-	margin-top: 1%;
-	font-weight: bold;
-	width: 40%;
+const AccountContainer = styled(Container)`
+	/* margin-left: 10%; */
+	margin-top: 2%;
+	/* font-weight: bold;
+	width: 40%; */
 `;
 
 const StyledRow = styled(Row)`
@@ -23,7 +23,32 @@ const ColVal = styled(Col)`
 	text-align: right;
 `;
 
-export default ({username, accountContractAddress, isMocked}: {username: string | boolean, accountContractAddress:string, isMocked: boolean}) => {
+const Wrapper = styled.div`
+	padding: 30px 50px 30px 50px;
+	border-radius: 10px;
+	/* border: solid lightgray; */
+	box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+`;
+
+const Seperator = styled.hr`
+	margin: 0px;
+`;
+
+const SubHeading = styled.label`
+	color: #696969;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 1em;
+	font-weight: bold;
+`;
+
+const Values = styled.label`
+	color: steelblue;
+	font-family: 'Courier New', Courier, monospace;
+	font-size: 1em;
+	font-weight: bold;
+`;
+
+export default ({ username, accountContractAddress, isMocked }: { username: string | boolean, accountContractAddress: string, isMocked: boolean }) => {
 
 	const [netBalance, setNetBalance] = useState('0');
 	const [accountType, setAccountType] = useState('');
@@ -37,7 +62,7 @@ export default ({username, accountContractAddress, isMocked}: {username: string 
 			const base = new BN(14)
 			const weiConverter = new BN(10).pow(base);
 			const preEthDecimal = new BN(netBal).div(weiConverter).toString(10);
-			const eth = [preEthDecimal.slice(0,1), ".", preEthDecimal.slice(1)].join("") + " ETH";
+			const eth = [preEthDecimal.slice(0, 1), ".", preEthDecimal.slice(1)].join("") + " ETH";
 			setNetBalance(eth)
 		});
 
@@ -56,8 +81,8 @@ export default ({username, accountContractAddress, isMocked}: {username: string 
 			}
 		});
 		getAccountStatus(accountContractAddress).then(accStatusBN => {
-			switch(accStatusBN.toNumber()){
-				case(1):
+			switch (accStatusBN.toNumber()) {
+				case (1):
 					setAccountStatus('CLOSED');
 				default:
 					setAccountStatus('OPEN');
@@ -69,34 +94,56 @@ export default ({username, accountContractAddress, isMocked}: {username: string 
 	}, []);
 
 	return (<AccountContainer>
-		<StyledRow>
-			<ColLabel>Account Address</ColLabel>
-			<ColVal>{accountContractAddress}</ColVal>
-		</StyledRow>
-		<StyledRow>
-			<ColLabel>Account Type</ColLabel>
-			<ColVal>{accountType}</ColVal>
-		</StyledRow>
-		<StyledRow>
-			<ColLabel>AccountStatus</ColLabel>
-			<ColVal>{accountStatus}</ColVal>
-		</StyledRow>
-		<StyledRow>
-			<ColLabel>Net Balance</ColLabel>
-			<ColVal>{netBalance}</ColVal>
-		</StyledRow>
-		<StyledRow>
-			<ColLabel>Time Till Reward</ColLabel>
-			<ColVal>{rewardSize}</ColVal>
-		</StyledRow>
-		<StyledRow>
-			<ColLabel>Reward Size</ColLabel>
-			<ColVal>{rewardSize}</ColVal>
-		</StyledRow>
-		<StyledRow>
-			<ColLabel>Payout Frequency</ColLabel>
-			<ColVal>{payoutFrequency}</ColVal>
-		</StyledRow>
+		<Wrapper>
+			<StyledRow>
+				<SubHeading>Account Address</SubHeading>
+				<ColVal>
+					<Values>{accountContractAddress}</Values>
+				</ColVal>
+			</StyledRow>
+			<Seperator></Seperator>
+			<StyledRow>
+				<SubHeading>Account Type</SubHeading>
+				<ColVal>
+					<Values>{accountType}</Values>
+				</ColVal>
+			</StyledRow>
+			<Seperator></Seperator>
+			<StyledRow>
+				<SubHeading>AccountStatus</SubHeading>
+				<ColVal>
+					<Values>{accountStatus}</Values>
+				</ColVal>
+			</StyledRow>
+			<Seperator></Seperator>
+			<StyledRow>
+				<SubHeading>Net Balance</SubHeading>
+				<ColVal>
+					<Values>{netBalance}</Values>
+				</ColVal>
+			</StyledRow>
+			<Seperator></Seperator>
+			<StyledRow>
+				<SubHeading>Time Till Reward</SubHeading>
+				<ColVal>
+					<Values>{rewardSize}</Values>
+				</ColVal>
+			</StyledRow>
+			<Seperator></Seperator>
+			<StyledRow>
+				<SubHeading>Reward Size</SubHeading>
+				<ColVal>
+					<Values>{rewardSize}</Values>
+				</ColVal>
+			</StyledRow>
+			<Seperator></Seperator>
+			<StyledRow>
+				<SubHeading>Payout Frequency</SubHeading>
+				<ColVal>
+					<Values>{payoutFrequency}</Values>
+				</ColVal>
+			</StyledRow>
+		</Wrapper>
 	</AccountContainer>)
 
 }

@@ -237,7 +237,7 @@ const SignupQuestions: React.FC<{
 								!ethInstance && !web3Instance ?
 									<Alert variant="warning">
 										<div style={{ padding: "20px" }}>
-											<H6>Oops! it seems like you haven't instal <strong><em>Meta Mask</em></strong> in your browser <Alert.Link href="https://chrome.google.com/webstore/detail/metamask/nkbihfbeogaeaoehlefnkodbefgpgknn?hl=en-GB" target="_blank"> Click Here!</Alert.Link> to install.</H6>
+											<H6>Oops! it seems like you haven't install <strong><em>Meta Mask</em></strong> in your browser <Alert.Link href="https://chrome.google.com/webstore/detail/metamask/nkbihfbeogaeaoehlefnkodbefgpgknn?hl=en-GB" target="_blank"> Click Here!</Alert.Link> to install.</H6>
 										</div>
 									</Alert>
 									:
@@ -271,10 +271,10 @@ const createAccountContract = async ({ signupData, ethInstance, web3Instance, se
 	const uniSuperLedger = contract({
 		abi: UniSuperLedger.abi,
 		unlinked_binary: UniSuperLedger.bytecode,
-		address: '0x9d107e28c0c1DB3399011C742699b66c712d2361'
+		address: UniSuperLedger.networks[5777].address
 	})
 	uniSuperLedger.setProvider(provider);
-	let instance = await uniSuperLedger.at('0x9d107e28c0c1DB3399011C742699b66c712d2361');
+	let instance = await uniSuperLedger.at(UniSuperLedger.networks[5777].address);
 	await instance.createEmployeeId(signupData.dateOfBirth, signupData.publicKey, signupData.username, { from: signupData.publicKey });
 
 	setNewUser(false);

@@ -24,7 +24,7 @@ export const getEmployeeContractAddress = async (username: string) => {
 	uniSuperLedger.setProvider(provider);
     employeeContract.setProvider(provider);
 
-    let uniSuperInstance = await uniSuperLedger.at('0x9d107e28c0c1DB3399011C742699b66c712d2361');
+    let uniSuperInstance = await uniSuperLedger.at(UniSuperLedger.networks[5777].address);
     const employeeContractAddress = await uniSuperInstance.getEmployeeContractAddress(username);
 
     return employeeContractAddress

@@ -1,5 +1,6 @@
 import Web3 from 'web3';
 import EmployeeContract from '../../contracts/Employee.json';
+import { getEmployeeContractAddress } from './unisuper.js';
 
 const contract = require("@truffle/contract");
 
@@ -33,4 +34,9 @@ export const createNewAccount = async(employeeContractAddress: string, ethInstan
     const arrayOfAccounts = await employeeContractInstance.getArrayOfAccounts();
 
     return arrayOfAccounts;
+}
+
+export const setPayoutAddress = async(employeeContractAddress: string) => {
+    const employeeContractInstance = await employeeContract.at(employeeContractAddress);
+    await employeeContractInstance.setPayoutAddress({});
 }

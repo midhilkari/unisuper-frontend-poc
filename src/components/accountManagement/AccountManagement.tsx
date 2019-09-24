@@ -2,6 +2,7 @@ import React, { Dispatch, SetStateAction, useState, useEffect } from 'react';
 import Menu from '../menu/Menu';
 import Details from '../details/Details';
 import AccountSelector from '../accountSelector/AccountSelector';
+import EmployeeSettings from '../employeeSettings/EmployeeSettings';
 
 import { getEmployeeAccounts } from '../../actions/contracts/employee';
 import { getEmployeeContractAddress } from '../../actions/contracts/unisuper';
@@ -18,6 +19,7 @@ export default ({ loggedInUsername, selectedMenu, setSelectedMenu, setLoggedIn, 
     const [employeeAccounts, setEmployeeAccounts] = useState([]);
     const [selectedAccount, setSelectedAccount] = React.useState<null | string>(null);
     const [employeeContractAddress, setEmployeeContractAddress] = useState('');
+    const [isEmployeeSettings, setEmployeeSettings] = useState(false);
 
     useEffect(() => {
         if (employeeContractAddress.length > 0) {
@@ -46,10 +48,13 @@ export default ({ loggedInUsername, selectedMenu, setSelectedMenu, setLoggedIn, 
                 ethInstance={ethInstance}
                 username={loggedInUsername} />
         </div>)
+    }else if(isEmployeeSettings){
+         return<EmployeeSettings/>
     } else {
         return (<AccountSelector employeeContractAddress={employeeContractAddress}
             setSelectedAccount={setSelectedAccount}
             employeeAccounts={employeeAccounts}
-            ethInstance={ethInstance} />)
+            ethInstance={ethInstance}
+            setEmployeeSettings={setEmployeeSettings} />)
     }
 }

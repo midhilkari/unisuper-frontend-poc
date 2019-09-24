@@ -99,6 +99,7 @@ type AccountSelector = {
     employeeAccounts: Array<any>;
     ethInstance: any;
     setSelectedAccount: Dispatch<SetStateAction<string | null>>;
+    setEmployeeSettings: Dispatch<SetStateAction<boolean>>;
 }
 
 type AccountCreatorType = {
@@ -114,7 +115,7 @@ const CreateAccount = ({ employeeContractAddress, setAccounts, ethInstance }: Ac
     }} />)
 }
 
-export default ({ employeeContractAddress, ethInstance, setSelectedAccount }: AccountSelector) => {
+export default ({ employeeContractAddress, ethInstance, setSelectedAccount, setEmployeeSettings }: AccountSelector) => {
     const [accounts, setAccounts] = useState([]);
 
     useEffect(() => {
@@ -137,7 +138,7 @@ export default ({ employeeContractAddress, ethInstance, setSelectedAccount }: Ac
                 </Col>
                 <Col>
                     <RightAlign>
-                        <StyledButton>Employee Settings</StyledButton>
+                        <StyledButton onClick={() => setEmployeeSettings(true)}>Employee Settings</StyledButton>
                     </RightAlign>
                 </Col>
             </Row>

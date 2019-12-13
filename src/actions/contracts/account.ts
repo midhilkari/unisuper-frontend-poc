@@ -6,7 +6,7 @@ import GanacheIns from './../../assets/connections/ExternalConnection.json';
 const contract = require("@truffle/contract");
 
 //const provider = new Web3.providers.HttpProvider("http://localhost:7545");
-const provider = new Web3.providers.HttpProvider(GanacheIns.ganacheIns);
+const provider = new Web3.providers.HttpProvider(GanacheIns.ganacheIP);
 
 
 const accountContract = contract({

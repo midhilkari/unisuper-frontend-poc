@@ -1,12 +1,12 @@
 import Account from '../../contracts/Account.json';
 import Web3 from 'web3';
 // Add dynamic redirection to cloud ganache instance
-import GanacheIns from './../../assets/connections/ExternalConnection.json';
+import {ganacheIP} from './../../assets/connections/ExternalConnection.json';
 
 const contract = require("@truffle/contract");
 
 //const provider = new Web3.providers.HttpProvider("http://localhost:7545");
-const provider = new Web3.providers.HttpProvider(GanacheIns.ganacheIP);
+const provider = new Web3.providers.HttpProvider(ganacheIP);
 
 
 const accountContract = contract({
